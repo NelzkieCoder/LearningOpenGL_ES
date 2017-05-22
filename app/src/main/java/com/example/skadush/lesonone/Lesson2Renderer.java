@@ -75,6 +75,9 @@ public class Lesson2Renderer implements GLSurfaceView.Renderer {
     /** Size of the color data in elements. */
     private final int mColorDataSize = 4;
 
+    /** This is a handle to our per-vertex cube shading program. */
+    private int mPerVertexProgramHandle;
+
     public Lesson2Renderer(Context context) {
         this.context = context;
 
@@ -121,65 +124,15 @@ public class Lesson2Renderer implements GLSurfaceView.Renderer {
         Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
 
 
+        final String vertexShader = getVertexShader();
+        final String fragmentShader = getFragmentShader();
 
+        final int vertexShaderHandle = Util.compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
+        final int fragmentShaderHandle = Util.compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
 
-        //String vertexShader = getStringFromInputStream(is);
-        String vertexShader = getVertexShader();
-        int vertexShaderHandle = GLES20.glCreateShader(GLES20.GL_VERTEX_SHADER);
+        mPerVertexProgramHandle = Util.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle,
+                new String[] {"a_Position", "a_Color", "a_Normal"});
 
-        if (vertexShaderHandle != 0)
-        {
-            // Pass in the shader source.
-            GLES20.glShaderSource(vertexShaderHandle, vertexShader);
-
-            // Compile the shader.
-            GLES20.glCompileShader(vertexShaderHandle);
-
-            // Get the compilation status.
-            final int[] compileStatus = new int[1];
-            GLES20.glGetShaderiv(vertexShaderHandle, GLES20.GL_COMPILE_STATUS, compileStatus, 0);
-
-            // If the compilation failed, delete the shader.
-            if (compileStatus[0] == 0)
-            {
-                GLES20.glDeleteShader(vertexShaderHandle);
-                vertexShaderHandle = 0;
-            }
-        }
-
-        if (vertexShaderHandle == 0)
-        {
-            throw new RuntimeException("Error creating vertex shader.");
-        }
-
-
-        String fragmentShader = getFragmentShader();
-
-        int fragmentShaderHandle = GLES20.glCreateShader(GLES20.GL_FRAGMENT_SHADER);
-
-        if (fragmentShaderHandle != 0)
-        {
-            // Pass in the shader source.
-            GLES20.glShaderSource(fragmentShaderHandle, fragmentShader);
-
-            // Compile the shader.
-            GLES20.glCompileShader(fragmentShaderHandle);
-
-            // Get the compilation status.
-            final int[] compileStatus = new int[1];
-            GLES20.glGetShaderiv(fragmentShaderHandle, GLES20.GL_COMPILE_STATUS, compileStatus, 0);
-
-            // If the compilation failed, delete the shader.
-            if (compileStatus[0] == 0)
-            {
-                GLES20.glDeleteShader(fragmentShaderHandle);
-                fragmentShaderHandle = 0;
-            }
-        }
-
-        // Link vertex and fragment shader together into a program
-
-        // Create a program object and store the handle to it.
         int programHandle = GLES20.glCreateProgram();
 
         if (programHandle != 0)
