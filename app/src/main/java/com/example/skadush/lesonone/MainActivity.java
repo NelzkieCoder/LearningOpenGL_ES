@@ -2,11 +2,17 @@ package com.example.skadush.lesonone;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -16,72 +22,31 @@ import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity {
 
-    GLSurfaceView glSurfaceView;
+
+    ListView listView;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        glSurfaceView = new GLSurfaceView(this);
+        listView = (ListView) findViewById(R.id.listView);
 
-        final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
-        final boolean supportES2 = configurationInfo.reqGlEsVersion >= 0x20000;
-        if (supportES2) {
-            glSurfaceView.setEGLContextClientVersion(2);
-            glSurfaceView.setRenderer(new Lesson2Renderer(this));
-            //Toast.makeText(this, "wooohooo", Toast.LENGTH_SHORT).show();
-        } else {
-            return;
-        }
+        String[] list = getResources().getStringArray(R.array.lessons);
 
-        setContentView(glSurfaceView);
+        ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,list);
+        listView.setAdapter(adapter);
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+               // Toast.makeText(MainActivity.this, "" + position, Toast.LENGTH_SHORT).show();
 
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        glSurfaceView.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        glSurfaceView.onPause();
-    }
-
-
-    // https://www.mkyong.com/java/how-to-convert-inputstream-to-string-in-java/
-    // convert InputStream to String
-    private static String getStringFromInputStream(InputStream is) {
-
-        BufferedReader br = null;
-        StringBuilder sb = new StringBuilder();
-
-        String line;
-        try {
-
-            br = new BufferedReader(new InputStreamReader(is));
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
+                Intent intent = new Intent(MainActivity.this,OpenglAcitivty.class);
+                intent.putExtra("index",position);
+                startActivity(intent);
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return sb.toString();
+        });
 
     }
 }

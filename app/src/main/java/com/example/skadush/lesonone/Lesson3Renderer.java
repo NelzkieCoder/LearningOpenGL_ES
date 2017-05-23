@@ -321,10 +321,10 @@ public class Lesson3Renderer implements GLSurfaceView.Renderer {
 
     protected String getVertexShader()
     {
-        return Util.readTextFileFromRawResource(context, R.raw.vertex);
+        return Util.readTextFileFromRawResource(context, R.raw.per_vertex_lighting);
     }
 
     protected String getFragmentShader(){
-        return Util.readTextFileFromRawResource(context,R.raw.fragment);
+        return Util.readTextFileFromRawResource(context,R.raw.per_fragment_lighting);
     }
 }

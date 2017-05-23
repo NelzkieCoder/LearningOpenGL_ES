@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">LesonOne</string>
+
+    <string-array name="lessons">
+        <item> Lesson one</item>
+        <item>Lesson 2</item>
+        <item>Lesson 3</item>
+    </string-array>
+
 </resources>
