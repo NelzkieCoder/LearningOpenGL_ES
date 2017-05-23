@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         final boolean supportES2 = configurationInfo.reqGlEsVersion >= 0x20000;
         if (supportES2) {
             glSurfaceView.setEGLContextClientVersion(2);
-            glSurfaceView.setRenderer(new LessonOneRenderer(this));
+            glSurfaceView.setRenderer(new Lesson2Renderer(this));
             //Toast.makeText(this, "wooohooo", Toast.LENGTH_SHORT).show();
         } else {
             return;
